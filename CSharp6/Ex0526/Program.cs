@@ -8,6 +8,8 @@ namespace Ex0526
     {
         static void Main(string[] args)
         {
+            #region 369
+            /*
             while (true)
             {
                 UnmanagedMemoryManager m = new UnmanagedMemoryManager();
@@ -15,10 +17,17 @@ namespace Ex0526
                 GC.Collect();   // GC로 인해 소멸자가 호출되므로 비관리 메모리도 해제됨.
 
                 Console.WriteLine(Process.GetCurrentProcess().PrivateMemorySize64);
-            }
+            }*/
+            #endregion 369
+            DateTime now = DateTime.Now;
+            Console.WriteLine(now);
+
+            DateTime dayForChildren = new DateTime(now.Year, 5, 5);
+            Console.WriteLine(dayForChildren);
         }
     }
-
+    #region 369
+    /*
     class UnmanagedMemoryManager : IDisposable
     {
         IntPtr pBuffer;
@@ -53,5 +62,6 @@ namespace Ex0526
         {
             Dispose(true);
         }
-    }
+    }*/
+    #endregion 369
 }
