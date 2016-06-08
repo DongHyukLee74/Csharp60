@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Threading;
 
-namespace Ex0621
+namespace Ex0622
 {
     class Program
     {
         static void Main(string[] args)
         {
+            #region 438
+            /*
             Console.WriteLine("입력한 숫자까지의 소수 개수 출력 (종료: 'x' + Enter)");
 
             while (true)
@@ -20,10 +22,25 @@ namespace Ex0621
                     break;
                 }
 
-                CountPrimeNumbers(userNumber);
+                //CountPrimeNumbers(userNumber);
+                Thread t = new Thread(CountPrimeNumbers);
+                t.IsBackground = true;
+                t.Start(userNumber);
+            }*/
+            #endregion 438
+            for (int i = 0; i < 10; i++)
+            {
+                Thread t = new Thread(threadFunc);
+                t.Start(i);
             }
         }
 
+        static void threadFunc(object value)
+        {
+            Console.WriteLine(value + "번째 스레드");
+        }
+        #region 438
+        /*
         static void CountPrimeNumbers(object initialValue)
         {
             string value = (string)initialValue;
@@ -57,6 +74,7 @@ namespace Ex0621
             }
 
             return candidate != 1;
-        }
+        }*/
+        #endregion 438
     }
 }
