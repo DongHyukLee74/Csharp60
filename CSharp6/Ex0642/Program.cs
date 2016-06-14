@@ -29,6 +29,8 @@ namespace Ex0642
                 }
             }*/
             #endregion 496
+            #region 497
+            /*
             // HttpWebRequest 타입은 내부적으로 TCP 소켓을 생성하고
             HttpWebRequest req = WebRequest.Create("http://www.naver.com") as HttpWebRequest;
 
@@ -41,7 +43,13 @@ namespace Ex0642
                 string responseText = sr.ReadToEnd();
                 Console.WriteLine(responseText);
                 File.WriteAllText("naverpage.html", responseText);
-            }
+            }*/
+            #endregion 497
+            // WebClient 타입은 내부적으로 HttpWebRequest 개체를 사용해 통신
+            WebClient wc = new WebClient();
+            string responseText = wc.DownloadString("http://www.naver.com");
+
+            Console.WriteLine(responseText);
         }
         #region 496
         /*
