@@ -1,42 +1,49 @@
 ﻿using System;
-using System.Collections;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Ex0647
+namespace Ex0652
 {
-    public class MemberInfo
-    {
-        public string Name;
-        public DateTime Birth;
-        public string Email;
-        public byte Family;
-    }
-
-    // DAC(Data Access Component for MemberInfo)
     public class MemberInfoDAC
     {
         SqlConnection _sqlCon;
+        DataTable _table;
 
         public MemberInfoDAC(SqlConnection sqlCon)
         {
             _sqlCon = sqlCon;
+
+            DataColumn nameCol = new DataColumn("Name", typeof(string));
+            DataColumn birthCol = new DataColumn("Birth", typeof(DateTime));
+            DataColumn emailCol = new DataColumn("Email", typeof(string));
+            DataColumn familyCol = new DataColumn("Family", typeof(byte));
+
+            _table = new DataTable("MemberInfo");
+            _table.Columns.Add(nameCol);
+            _table.Columns.Add(birthCol);
+            _table.Columns.Add(emailCol);
+            _table.Columns.Add(familyCol);
         }
 
-        void FillParameters(SqlCommand cmd, MemberInfo item)
+        public DataRow NewRow()
+        {
+            return _table.NewRow();
+        }
+
+        void FillParameters(SqlCommand cmd, DataRow item)
         {
             SqlParameter paramName = new SqlParameter("Name", SqlDbType.NVarChar, 20);
-            paramName.Value = item.Name;
+            paramName.Value = item["Name"];
 
             SqlParameter paramBirth = new SqlParameter("Birth", SqlDbType.Date);
-            paramBirth.Value = item.Birth;
+            paramBirth.Value = item["Birth"];
 
             SqlParameter paramEmail = new SqlParameter("Email", SqlDbType.NVarChar, 100);
-            paramEmail.Value = item.Email;
+            paramEmail.Value = item["Email"];
 
             SqlParameter paramFamily = new SqlParameter("Family", SqlDbType.TinyInt);
-            paramFamily.Value = item.Family;
+            paramFamily.Value = item["Family"];
 
             cmd.Parameters.Add(paramName);
             cmd.Parameters.Add(paramBirth);
@@ -44,7 +51,7 @@ namespace Ex0647
             cmd.Parameters.Add(paramFamily);
         }
 
-        public void Insert(MemberInfo item)
+        public void Insert(DataRow item)
         {
             string txt = "INSERT INTO MemberInfo(Name, Birth, Email, Family) VALUES (@Name, @Birth, @Email, @Family)";
 
@@ -53,7 +60,7 @@ namespace Ex0647
             cmd.ExecuteNonQuery();
         }
 
-        public void Update(MemberInfo item)
+        public void Update(DataRow item)
         {
             string txt = "UPDATE MemberInfo SET Name=@Name, Birth=@Birth, Family=@Family WHERE Email=@Email";
 
@@ -62,7 +69,7 @@ namespace Ex0647
             cmd.ExecuteNonQuery();
         }
 
-        public void Delete(MemberInfo item)
+        public void Delete(DataRow item)
         {
             string txt = "DELETE FROM MemberInfo WHERE Email=@Email";
 
@@ -71,29 +78,12 @@ namespace Ex0647
             cmd.ExecuteNonQuery();
         }
 
-        public MemberInfo[] SelectAll()
+        public DataSet SelectAll()
         {
-            string txt = "SELECT * FROM MemberInfo";
-            ArrayList list = new ArrayList();
-
-            SqlCommand cmd = new SqlCommand(txt, _sqlCon);
-
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    MemberInfo item = new MemberInfo();
-
-                    item.Name = reader.GetString(0);
-                    item.Birth = reader.GetDateTime(1);
-                    item.Email = reader.GetString(2);
-                    item.Family = reader.GetByte(3);
-
-                    list.Add(item);
-                }
-            }
-
-            return list.ToArray(typeof(MemberInfo)) as MemberInfo[];
+            DataSet ds = new DataSet();
+            SqlDataAdapter sda = new SqlDataAdapter("SELECT * FROM MemberInfo", _sqlCon);
+            sda.Fill(ds, "MemberInfo");
+            return ds;
         }
     }
 
